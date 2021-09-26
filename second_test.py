@@ -24,7 +24,7 @@ def test():
 
 
 def test1():
-    pprint(page.children[1].views[0].default_query().execute()[0])
+    return page.children[1].views[0].default_query().execute()[0]
 
 def test2(block = page, links = []):
     """
@@ -58,7 +58,7 @@ def test2(block = page, links = []):
 
 
 
-def test3(block = page.children[2].children[0], parent = None):
+def test3(block, parent = None):
     """
     This test is to see if I can extract the parent page of an element 
     """
@@ -78,9 +78,43 @@ def test4(page = todo_test_page):
     page.children.add_new(BulletedListBlock, title = "Success Bullet")
     print(page.children[-1].title)
 
+def test5(page = todo_test_page):
+    """
+    This test is to see if I can delete the contents of a page. 
+    """
+    print()
+    for child in page.children:
+        repr = child.__repr__()
+        print(f"\nBeginning the permenant deletion process of {repr}")
+        try:
+            child.remove(permanently=True)
+            print(f"Permenant deletion proccess of {repr} has been completed with no erros or run-time exceptions.")
+        except Exception as e:
+            print(f"Permenant deletion proccess of {repr} has been aborted before completion due to the following run-time exception:\n{e}\n")
+
+    if(not page.children):
+        print("Processes of all permenant child deletion have completed with SUCCESS.")
+    else:
+        print("Processes of all permenant child deletion have completed with FAILURE.")
+
+def test6():
+    """
+    To see if you can transfer block objects between functions
+    """
+    block = test1()
+    print("test 6")
+    print(block.__repr__())
+
+
+def test7():
+    """
+    Testing types of blocks
+    """
+    print(page.children[0].__repr__())
+    print(page.children[0].__repr__().split(" ")[0])
 #pprint(test2(client.get_block("https://www.notion.so/Test-page-3ec47b5d6202464ab9b831a099b4aa35")))
 #pprint(page.children[1].views[0].default_query().execute())
 #test3()
 
-test4()
+test7()
 
