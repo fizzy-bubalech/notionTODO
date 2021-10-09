@@ -1,10 +1,7 @@
-from dataclasses import dataclass
-from os import link
-from notion.block import BulletedListBlock, TextBlock, PageBlock
+from notion.block import BulletedListBlock
 from notion.client import NotionClient
-from pprint import pprint
 
-from notion_client.typing import T
+import logging
 
 client = NotionClient(token_v2="a2a9a01452b469a2572c1f4918e5b938bb35f8c176300b54110c2a1f3862d80cf196dc09d7c27a12de56fc4bc9659cd311841d96e278caf2c0c54c2b74f06b9f6822bff15d4957177d8fe8564c5c")
 
@@ -48,7 +45,7 @@ def eraser_head(page = todo_page):
             child.remove(permanently=True)
             print(f"Permenant deletion proccess of {repr} has been completed with no erros or run-time exceptions.")
         except Exception as e:
-            print(f"Permenant deletion proccess of {repr} has been aborted before completion due to the following run-time exception:\n{e}\n")
+            raise f"Permenant deletion proccess of {repr} has been aborted before completion due to the following run-time exception:\n{e}\n"
 
     if(not page.children):
         print("Processes of all permenant child deletion have completed with SUCCESS.")
@@ -69,7 +66,7 @@ def file_comb(page=page,target = "TODO",links = []):
     page_children = page.children
     c_links = links
     if(not page_children):
-        if(has_title(page) and target in page.title):
+        if(hasattr(page,'title') and target in page.title):
                 c_links.append((page.get_browseable_url(),page.title))
         return c_links
     for i in page_children:
@@ -81,10 +78,9 @@ def file_comb(page=page,target = "TODO",links = []):
                 return c_links
         elif("block" in i.__repr__().split(" ")[0].lower()):
             file_comb(i,"TODO",c_links)
-            if(has_title(i) and target in i.title and (i.get_browseable_url(),i.title) not in c_links):
+            if(hasattr(i,'title') and target in i.title and (i.get_browseable_url(),i.title) not in c_links):
                 c_links.append((i.get_browseable_url(),i.title))
     return c_links
-
 
 
 if __name__ == "__main__":
